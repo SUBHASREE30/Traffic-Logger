@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Search Violations{% endblock %}
+
+{% block content %}
+<h4 class="fw-bold mb-4"><i class="bi bi-search me-2 text-primary"></i>Search Violations</h4>
+
+<!-- Search form -->
+<div class="card p-4 mb-4">
+  <form method="GET" class="row g-3 align-items-end">
+    <div class="col-md-5">
+      <label class="form-label fw-semibold">Vehicle Number</label>
+      <input type="text" name="q" class="form-control" placeholder="e.g. TN01AB1234"
+             value="{{ query }}">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-semibold">Status</label>
+      <select name="status" class="form-select">
+        <option value="">All</option>
+        <option {% if status_filter=='Unpaid' %}selected{% endif %}>Unpaid</option>
+        <option {% if status_filter=='Paid'   %}selected{% endif %}>Paid</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="bi bi-search me-1"></i>Search
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Results -->
+{% if query %}
+  {% if violations %}
+  <p class="text-muted">Found <strong>{{ violations|length }}</strong> result(s) for "<strong>{{ query }}</strong>"</p>
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead style="background:#1a3a6e;color:#fff;">
+          <tr>
+            <th>#</th><th>Vehicle No.</th><th>Violation</th>
+            <th>Location</th><th>Date</th><th>Fine (₹)</th>
+            <th>Status</th><th>Challan</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in violations %}
+          <tr>
+            <td>{{ v.id }}</td>
+            <td><strong>{{ v.vehicle_no }}</strong></td>
+            <td>{{ v.violation_type }}</td>
+            <td>{{ v.location }}</td>
+            <td>{{ v.date }}</td>
+            <td>{{ "%.2f"|format(v.fine_amount) }}</td>
+            <td>
+              <span class="badge {% if v.status=='Paid' %}bg-success{% else %}bg-danger{% endif %}">
+                {{ v.status }}
+              </span>
+            </td>
+            <td>
+              <a href="{{ url_for('challan', violation_id=v.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-receipt"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-warning">
+    <i class="bi bi-exclamation-circle me-2"></i>No violations found for "<strong>{{ query }}</strong>".
+  </div>
+  {% endif %}
+{% endif %}
+{% endblock %}

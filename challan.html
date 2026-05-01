@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Challan #{{ violation.id }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card p-4" id="challan-card">
+
+      <!-- Header -->
+      <div class="text-center border-bottom pb-3 mb-3">
+        <h5 class="fw-bold text-uppercase" style="color:#1a3a6e;">
+          <i class="bi bi-shield-fill-check me-2"></i>Traffic Challan Receipt
+        </h5>
+        <p class="mb-0 text-muted small">Challan No: <strong>#{{ violation.id }}</strong></p>
+      </div>
+
+      <!-- Details -->
+      <table class="table table-borderless table-sm mb-3">
+        <tr>
+          <td class="text-muted" width="40%">Vehicle No.</td>
+          <td><strong>{{ violation.vehicle_no }}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Violation</td>
+          <td>{{ violation.violation_type }}</td>
+        </tr>
+        <tr>
+          <td class="text-muted">Location</td>
+          <td>{{ violation.location }}</td>
+        </tr>
+        <tr>
+          <td class="text-muted">Date</td>
+          <td>{{ violation.date }}</td>
+        </tr>
+        <tr>
+          <td class="text-muted">Fine Amount</td>
+          <td><strong class="text-danger">₹ {{ "%.2f"|format(violation.fine_amount) }}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Status</td>
+          <td>
+            <span class="badge {% if violation.status == 'Paid' %}bg-success{% else %}bg-danger{% endif %}">
+              {{ violation.status }}
+            </span>
+          </td>
+        </tr>
+      </table>
+
+      <!-- QR Code -->
+      <div class="text-center my-3">
+        <p class="text-muted small mb-2">Scan QR to check payment status</p>
+        <img src="data:image/png;base64,{{ qr_code }}" width="160" height="160" alt="QR Code">
+        <p class="text-muted small mt-1" style="word-break:break-all;">{{ public_url }}</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex gap-2 mt-2">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary flex-fill">
+          <i class="bi bi-arrow-left me-1"></i>Back
+        </a>
+        {% if violation.status == 'Unpaid' %}
+        <form method="POST" action="{{ url_for('mark_paid', violation_id=violation.id) }}" class="flex-fill">
+          <button class="btn btn-success w-100">
+            <i class="bi bi-check2-circle me-1"></i>Mark as Paid
+          </button>
+        </form>
+        {% endif %}
+        <button onclick="window.print()" class="btn btn-outline-primary flex-fill">
+          <i class="bi bi-printer me-1"></i>Print
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

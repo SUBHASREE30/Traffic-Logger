@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Add Violation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card p-4">
+      <h4 class="fw-bold mb-4"><i class="bi bi-plus-circle-fill text-primary me-2"></i>Record New Violation</h4>
+      <form method="POST">
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Vehicle Number</label>
+          <input type="text" name="vehicle_no" class="form-control" placeholder="e.g. TN01AB1234" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Violation Type</label>
+          <select name="violation_type" class="form-select" required>
+            <option value="">-- Select --</option>
+            <option>No Helmet</option>
+            <option>Overspeeding</option>
+            <option>Signal Jumping</option>
+            <option>Wrong Lane</option>
+            <option>No Seatbelt</option>
+            <option>Drunk Driving</option>
+            <option>No License</option>
+            <option>Mobile Phone Use</option>
+            <option>Illegal Parking</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Location</label>
+          <input type="text" name="location" class="form-control" placeholder="e.g. Anna Salai, Chennai" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Date</label>
+          <input type="date" name="date" class="form-control" required
+                 value="{{ ''|default(now if now else '') }}">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Fine Amount (₹)</label>
+          <input type="number" name="fine_amount" class="form-control" placeholder="e.g. 500" min="0" step="0.01" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="bi bi-save me-2"></i>Save & Generate Challan
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
